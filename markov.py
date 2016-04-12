@@ -41,26 +41,26 @@ def make_chains(text_string):
 
     while counter < (len(text_string) - 2):
         #create a tuple/bigram of words
-        if text_string[counter+1] in chains:
-            chains[(text_string[counter], text_string[counter+1])].append(text_string[counter + 2])
+        new_key = (text_string[counter], text_string[counter+1])
+        new_value = text_string[counter + 2]
+
+        # check if new_key in chain, if it is, append new_value, otherwise add new_key with new_value to chain
+        if new_key in chains:
+
+            #chains[first_word, second_word].append(word that follows second word(word 3))
+            #in other words index1 =  1, index2 = value1 + 1, index3 = index2 + 1
+            chains[new_key].append(new_value)
 
             #chains[("could", "you")]= "could you"
         else:
-            chains[(text_string[counter], text_string[counter+1])] = [text_string[counter + 2]]
-
-
+            chains[new_key] = [new_value]
 
         counter += 1
 
-
-
-
-
-
-
-
-    for key in chains:
-        print key, chains[key]
+    # for testing
+    # for key in chains:
+    #     print key, chains[key]
+    
     return chains
 
 make_chains(open_and_read_file("green-eggs.txt"))
