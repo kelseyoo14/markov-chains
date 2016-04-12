@@ -30,14 +30,10 @@ def make_chains(text_string):
 
     # Create list to hold each word in the text file
     text_string = text_string.split()
+    text_string[-1]
 
     # Create a list of bi-grams that will be the keys of the dictionary of markov chains
     counter = 0
-    # while counter < len(text_string) -2:
-    #     #create a tuple/bigram of words
-    #     bigram_keys.append([(text_string[counter], text_string[counter+1])])
-    #     counter += 1
-
 
     while counter < (len(text_string) - 2):
         #create a tuple/bigram of words
@@ -57,24 +53,51 @@ def make_chains(text_string):
 
         counter += 1
 
-    # for testing
+    # for testing 
     # for key in chains:
     #     print key, chains[key]
-    
-    return chains
 
-make_chains(open_and_read_file("green-eggs.txt"))
+    return [chains, text_string]
 
-# def make_text(chains):
-#     """Takes dictionary of markov chains; returns random text."""
+chains, text_string = make_chains(open_and_read_file("green-eggs.txt"))
 
-#     text = ""
+def make_text(chains, text_string):
+    """Takes dictionary of markov chains; returns random text."""
 
-#     # your code goes here
+    # creates variable to hold first words and last word of text file
+    first_words = (text_string[0], text_string[1])
+    last_word = text_string[-1]
 
-#     return text
+    # picks random key from dictionary
+    # current_key = choice(chains.keys())
+
+    # initialize current_key
+    current_key = first_words
+
+    # recreate current_key if it equals the last two words of the file
+    # so that we get more than 2 words in our story.
+    # while current_key[1] == last_word:
+    #     current_key = choice(chains.keys())
+
+    # creates start of text
+    text = "{} {}".format(current_key[0], current_key[1])
+
+    # loop through a range, grabbing a new current_key, generating a new random_word
+    # add new random_word to text
+    # if new random_word is 'am?' break, so that 'am?' is the end of text
+    for i in range(0, 100):
+        random_word = choice(chains[current_key])
+        text = text + " " + random_word
+        if random_word == last_word:
+            break
+        current_key = (current_key[1], random_word)
+        
+    print text
+
+    return text
 
 
+make_text(chains, text_string)
 # input_path = "green-eggs.txt"
 
 # # Open the file and turn it into one long string
