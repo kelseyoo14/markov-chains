@@ -64,20 +64,26 @@ def make_chains(text_string):
 def make_text(chains, text_string):
     """Takes dictionary of markov chains; returns random text."""
 
-    # creates variable to hold first words and last word of text file
-    first_words = (text_string[0], text_string[1])
-    last_word = text_string[-1]
+    # variable to hold first words of text file
+    # while key is not our_first_key[].isupper()
+    # first_words = (text_string[0], text_string[1])
+
+    # variable to hold last word of text file
+    last_word = (text_string[-1])
+
+    # count how many sentences in text, so function will quit after so many sentences
+    punctuation_count = 0
 
     # picks random key from dictionary
-    # current_key = choice(chains.keys())
+    current_key = choice(chains.keys())
+    while current_key[0][0].islower() or current_key[1] == last_word:
+        current_key = choice(chains.keys())
 
     # initialize current_key
-    current_key = first_words
+    # current_key = first_words
 
     # recreate current_key if it equals the last two words of the file
     # so that we get more than 2 words in our story.
-    # while current_key[1] == last_word:
-    #     current_key = choice(chains.keys())
 
     # creates start of text
     text = "{} {}".format(current_key[0], current_key[1])
@@ -86,10 +92,20 @@ def make_text(chains, text_string):
     # add new random_word to text
     # if new random_word is 'am?' break, so that 'am?' is the end of text
     for i in range(1000):
+        # create next random_word
         random_word = choice(chains[current_key])
+        # add new random_word to text
         text = text + " " + random_word
+        # check to see if word ends with punctuation
+        if random_word[-1] == "?" or random_word[-1] == "." or random_word[-1] == "!":
+            punctuation_count += 1
+            # make sure program prints at least so many sentences before breaking
+            if punctuation_count > 10:
+                break
+        # break program at the last_word of text_string
         if random_word == last_word:
             break
+        # rebind current_key to new value to run through next iteration of loop
         current_key = (current_key[1], random_word)
 
     return text
