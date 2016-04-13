@@ -14,7 +14,7 @@ def open_and_read_file(file_path):
     return file_words
 
 
-def make_chains(text_string):
+def make_chains(text_string, n_gram = 2):
     """Takes input text as string; returns _dictionary_ of markov chains.
 
     A chain will be a key that consists of a tuple of (word1, word2)
@@ -31,15 +31,18 @@ def make_chains(text_string):
 
     # Create list to hold each word in the text file
     text_string = text_string.split()
-    text_string[-1]
+    # text_string[-1]
 
-    # Create a list of bi-grams that will be the keys of the dictionary of markov chains
-    counter = 0
-
-    while counter < (len(text_string) - 2):
+    # Create a list of n-grams that will be the keys of the dictionary of markov chains
+    for i in range((len(text_string) - n_gram)):
         #create a tuple/bigram of words
-        new_key = (text_string[counter], text_string[counter+1])
-        new_value = text_string[counter + 2]
+        new_key = tuple(text_string[i:(i + n_gram)])
+        # print new_key
+
+
+        # new_key = (text_string[i], text_string[i+1])
+        new_value = text_string[i + n_gram]
+        # print new_value
 
         # check if new_key in chain, if it is, append new_value, otherwise add new_key with new_value to chain
         if new_key in chains:
@@ -52,7 +55,6 @@ def make_chains(text_string):
         else:
             chains[new_key] = [new_value]
 
-        counter += 1
 
     # for testing 
     # for key in chains:
@@ -62,51 +64,50 @@ def make_chains(text_string):
 
 
 def make_text(chains, text_string):
-    """Takes dictionary of markov chains; returns random text."""
-
-    # variable to hold first words of text file
-    # while key is not our_first_key[].isupper()
-    # first_words = (text_string[0], text_string[1])
+    """Takes dictionary of markov chains and text_string of file words; returns random text."""
 
     # variable to hold last word of text file
     last_word = (text_string[-1])
 
-    # count how many sentences in text, so function will quit after so many sentences
-    punctuation_count = 0
 
     # picks random key from dictionary
     current_key = choice(chains.keys())
-    while current_key[0][0].islower() or current_key[1] == last_word:
+    n_gram = len(current_key)
+
+    # make sure current_key starts with upper case letter and doesn't inclue last_word
+    while current_key[0][0].islower() or current_key[n_gram - 1] == last_word:
         current_key = choice(chains.keys())
 
-    # initialize current_key
-    # current_key = first_words
-
-    # recreate current_key if it equals the last two words of the file
-    # so that we get more than 2 words in our story.
 
     # creates start of text
-    text = "{} {}".format(current_key[0], current_key[1])
+    text = " ".join(current_key)
 
+    
+    # initialize random_word and punctuation_count
+    random_word = ()
+    # punctuation_count = 0
+
+    # make sure program prints at least so many sentences before breaking
+    # break program at the last_word of text_string
     # loop through a range, grabbing a new current_key, generating a new random_word
     # add new random_word to text
     # if new random_word is 'am?' break, so that 'am?' is the end of text
-    for i in range(1000):
+    while random_word != last_word:
         # create next random_word
         random_word = choice(chains[current_key])
+
         # add new random_word to text
         text = text + " " + random_word
+
         # check to see if word ends with punctuation
-        if random_word[-1] == "?" or random_word[-1] == "." or random_word[-1] == "!":
-            punctuation_count += 1
-            # make sure program prints at least so many sentences before breaking
-            if punctuation_count > 10:
-                break
-        # break program at the last_word of text_string
-        if random_word == last_word:
-            break
-        # rebind current_key to new value to run through next iteration of loop
-        current_key = (current_key[1], random_word)
+        # if random_word[-1] == "?" or random_word[-1] == "." or random_word[-1] == "!":
+        #     punctuation_count += 1
+        
+
+        # rebind new current_key to all values except first from current_key and the new random_word
+        current_key = current_key[1:n_gram]
+        current_key = current_key + tuple([random_word])
+
 
     return text
 
@@ -115,7 +116,7 @@ def make_text(chains, text_string):
 
 filename = sys.argv[1]
 
-chains, text_string = make_chains(open_and_read_file(filename))
+chains, text_string = make_chains(open_and_read_file(filename), 2)
 print make_text(chains, text_string)
 
 
