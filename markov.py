@@ -1,4 +1,5 @@
 from random import choice
+import sys
 
 
 def open_and_read_file(file_path):
@@ -59,7 +60,6 @@ def make_chains(text_string):
 
     return [chains, text_string]
 
-chains, text_string = make_chains(open_and_read_file("green-eggs.txt"))
 
 def make_text(chains, text_string):
     """Takes dictionary of markov chains; returns random text."""
@@ -85,19 +85,24 @@ def make_text(chains, text_string):
     # loop through a range, grabbing a new current_key, generating a new random_word
     # add new random_word to text
     # if new random_word is 'am?' break, so that 'am?' is the end of text
-    for i in range(0, 100):
+    for i in range(1000):
         random_word = choice(chains[current_key])
         text = text + " " + random_word
         if random_word == last_word:
             break
         current_key = (current_key[1], random_word)
-        
-    print text
 
     return text
 
 
-make_text(chains, text_string)
+# -----------------------------------------------------------------
+
+filename = sys.argv[1]
+
+chains, text_string = make_chains(open_and_read_file(filename))
+print make_text(chains, text_string)
+
+
 # input_path = "green-eggs.txt"
 
 # # Open the file and turn it into one long string
